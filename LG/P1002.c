@@ -1,47 +1,25 @@
-#include <stdio.h>
-
-int main() {
-    int n, m, hx, hy;
-    scanf("%d %d %d %d", &n, &m, &hx, &hy);
-
-    int blocked[25][25] = {0};
-    long long dp[25][25] = {0};
-
-    int dx[8] = {1, 2, 2, 1, -1, -2, -2, -1};
-    int dy[8] = {2, 1, -1, -2, -2, -1, 1, 2};
-
-    if (hx >= 0 && hx <= n && hy >= 0 && hy <= m) {
-        blocked[hx][hy] = 1;
+#include<stdio.h>
+#include<stdlib.h>
+int IsNearHorse(int x, int y, int c, int d){
+    if((x == c && y == d) || (abs(x - c) + abs(y - d) == 1)){
+        return -1;
+    }else{
+        return 1;
     }
-    for (int i = 0; i < 8; i++) {
-        int x = hx + dx[i];
-        int y = hy + dy[i];
-        if (x >= 0 && x <= n && y >= 0 && y <= m) {
-            blocked[x][y] = 1;
-        }
-    }
+}
 
-    if (!blocked[0][0]) {
-        dp[0][0] = 1;
+int CalculateWays(int x, int y, int a, int b, int c, int d){
+    if(abs(x - a) + abs(y - b) == 1 && IsNearHorse(x, y, c, d) == 1){
+        return 1;
+    }else{
+        return CalculateWays(x + 1, y, a, b, c, d) + CalculateWays(x, y + 1, a, b, c, d);
     }
-
-    for (int i = 0; i <= n; i++) {
-        for (int j = 0; j <= m; j++) {
-            if (blocked[i][j]) {
-                continue;
-            }
-            if (i == 0 && j == 0) {
-                continue;
-            }
-            if (i > 0) {
-                dp[i][j] += dp[i - 1][j];
-            }
-            if (j > 0) {
-                dp[i][j] += dp[i][j - 1];
-            }
-        }
-    }
-
-    printf("%lld", dp[n][m]);
+}
+int main(){
+    int a,b,c,d;
+    scanf("%d %d %d %d",&a,&b,&c,&d);
+    //恭喜获得了B点的坐标(a,b)和马的坐标(c,d)
+    int method = CalculateWays(0, 0, a, b, c, d);
+    printf("%d",method);
     return 0;
 }
